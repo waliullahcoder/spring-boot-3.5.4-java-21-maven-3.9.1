@@ -1,2 +1,5 @@
-com\example\myfirstproject\MyfirstprojectApplication.class
+com\example\myfirstproject\controller\UserController.class
+com\example\myfirstproject\SpringCrudMysqlApplication.class
+com\example\myfirstproject\model\User.class
+com\example\myfirstproject\repository\UserRepository.class
 com\example\myfirstproject\HelloController.class
