@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: accounting-java-react
+  datasource:
+    url: jdbc:h2:mem:acctdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: change-this-32b-secret-change-this-32b
+  expiration: 3600000
+server:
+  port: 8080
