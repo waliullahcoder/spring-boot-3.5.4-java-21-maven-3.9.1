@@ -1,1 +1,14 @@
-com\example\accounting\AccountingJavaReactApplication.class
+com\example\security\config\SecurityConfig.class
+com\example\persistence\entity\User$UserBuilder.class
+com\example\common\dto\UserProfileDto.class
+com\example\common\dto\UserProfileDto$UserProfileDtoBuilder.class
+com\example\common\dto\RegisterRequest.class
+com\example\persistence\repository\UserRepository.class
+com\example\security\jwt\JwtFilter.class
+com\example\api\controller\AuthController.class
+com\example\common\dto\LoginRequest.class
+com\example\security\service\CustomUserDetailsService.class
+com\example\AccountingJavaReactApplication.class
+com\example\security\jwt\JwtUtil.class
+com\example\core\service\UserService.class
+com\example\persistence\entity\User.class

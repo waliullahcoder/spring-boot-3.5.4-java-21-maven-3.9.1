@@ -37,9 +37,8 @@ accounting-java-react/
 ├─ pom.xml
 ├─ config/
 │  └─ application-sample.yml
+|__src/main/java/com/example/app/Application.java
 ├─ modules/
-│  ├─ app/
-│  │  └─ src/main/java/com/example/app/Application.java
 │  │
 │  ├─ api/
 │  │  └─ src/main/java/com/example/api/controller/AuthController.java
@@ -78,11 +77,12 @@ mvn -pl modules/app -am spring-boot:run
 mvn spring-boot:run
 
 APIs:
+✅ এখন Postman এ:
 
-POST /api/auth/register
+Register: POST /api/auth/register
 
-POST /api/auth/login
+Login: POST /api/auth/login → JWT token পাবো
 
-PUT /api/auth/profile (needs Authorization: Bearer <token>)
+Update Profile: PUT /api/auth/profile (Header: Authorization: Bearer <token>)
 
-POST /api/auth/logout
+Logout: POST /api/auth/logout

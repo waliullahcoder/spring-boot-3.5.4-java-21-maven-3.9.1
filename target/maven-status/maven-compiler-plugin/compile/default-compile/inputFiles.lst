@@ -1,1 +1,12 @@
 E:\JAVA\accounting-java-react\src\main\java\com\example\accounting\AccountingJavaReactApplication.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\api\controller\AuthController.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\common\dto\LoginRequest.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\common\dto\RegisterRequest.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\common\dto\UserProfileDto.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\core\service\UserService.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\persistence\entity\User.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\persistence\repository\UserRepository.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\security\config\SecurityConfig.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\security\jwt\JwtFilter.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\security\jwt\JwtUtil.java
+E:\JAVA\accounting-java-react\src\main\java\com\example\security\service\CustomUserDetailsService.java
