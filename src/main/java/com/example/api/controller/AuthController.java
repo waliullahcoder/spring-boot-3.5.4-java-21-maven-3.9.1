@@ -46,13 +46,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+
+        System.out.println("WALI Req= "+ req);
         try {
             authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword())
             );
             String token = jwtUtil.generateToken(req.getUsername());
+            System.out.println("WALI Token= "+ token);
             return ResponseEntity.ok(Map.of("token", token));
         } catch (AuthenticationException e) {
+            System.out.println("WALI exception= "+ e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
