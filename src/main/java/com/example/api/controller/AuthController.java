@@ -39,6 +39,7 @@ public class AuthController {
                 .password(passwordEncoder.encode(req.getPassword()))
                 .email(req.getEmail())
                 .fullName(req.getFullName())
+                .role(req.getRole())
                 .build();
         userService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
