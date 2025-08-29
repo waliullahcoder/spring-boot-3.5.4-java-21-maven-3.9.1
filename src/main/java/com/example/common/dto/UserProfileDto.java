@@ -6,7 +6,11 @@ import lombok.Data;
 @Data
 @Builder
 public class UserProfileDto {
-    private String username;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    private String zipCode;
+    private Boolean isSuperadmin = false; // default false
     private String email;
-    private String fullName;
+    private String password;
 }

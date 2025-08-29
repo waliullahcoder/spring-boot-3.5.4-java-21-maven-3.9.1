@@ -17,15 +17,26 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    public User updateProfile(String username, String email, String fullName) {
-        User user = userRepository.findByUsername(username)
+    public User updateProfile(String currentEmail,
+                              String firstName,
+                              String lastName,
+                              String phoneNumber,
+                              String zipCode,
+                              String newEmail) {
+
+        User user = userRepository.findByEmail(currentEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setEmail(email);
-        user.setFullName(fullName);
+
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPhoneNumber(phoneNumber);
+        user.setZipCode(zipCode);
+        user.setEmail(newEmail);
+
         return userRepository.save(user);
     }
 }

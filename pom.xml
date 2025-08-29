@@ -108,20 +108,21 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Flyway Plugin -->
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>10.17.0</version>
-                <configuration>
-                    <url>jdbc:mysql://localhost:3306/javaaccountingdb</url>
-                    <user>root</user>
-                    <password></password>
-                    <locations>
-                        <location>filesystem:src/main/resources/db/migration</location>
-                    </locations>
-                </configuration>
-            </plugin>
+
+            <!-- Flyway Plugin (this section for migration from src/main/resources/db/migration/V1__create_users_table.sql)-->
+<!--            <plugin>-->
+<!--                <groupId>org.flywaydb</groupId>-->
+<!--                <artifactId>flyway-maven-plugin</artifactId>-->
+<!--                <version>10.17.0</version>-->
+<!--                <configuration>-->
+<!--                    <url>jdbc:mysql://localhost:3306/javaaccountingdb</url>-->
+<!--                    <user>root</user>-->
+<!--                    <password></password>-->
+<!--                    <locations>-->
+<!--                        <location>filesystem:src/main/resources/db/migration</location>-->
+<!--                    </locations>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

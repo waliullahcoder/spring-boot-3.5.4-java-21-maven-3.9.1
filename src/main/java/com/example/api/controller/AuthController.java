@@ -31,48 +31,61 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest req) {
-        if (userService.findByUsername(req.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
+        if (userService.findByEmail(req.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists!");
         }
+
         User user = User.builder()
-                .username(req.getUsername())
-                .password(passwordEncoder.encode(req.getPassword()))
+                .firstName(req.getFirstName())
+                .lastName(req.getLastName())
+                .phoneNumber(req.getPhoneNumber())
+                .zipCode(req.getZipCode())
+                .isSuperadmin(req.getIsSuperadmin() != null ? req.getIsSuperadmin() : false)
                 .email(req.getEmail())
-                .fullName(req.getFullName())
-                .role(req.getRole())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .rememberToken(null)   // later can set for "remember me"
                 .build();
+
         userService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-
-        System.out.println("WALI Req= "+ req);
         try {
             authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword())
+                    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
             );
-            String token = jwtUtil.generateToken(req.getUsername());
-            System.out.println("WALI Token= "+ token);
+            String token = jwtUtil.generateToken(req.getEmail());
             return ResponseEntity.ok(Map.of("token", token));
         } catch (AuthenticationException e) {
-            System.out.println("WALI exception= "+ e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
 
     @PutMapping("/profile")
     public ResponseEntity<UserProfileDto> updateProfile(@RequestBody UserProfileDto req, Principal principal) {
-        User updated = userService.updateProfile(principal.getName(), req.getEmail(), req.getFullName());
+        User updated = userService.updateProfile(
+                principal.getName(),       // current email
+                req.getFirstName(),
+                req.getLastName(),
+                req.getPhoneNumber(),
+                req.getZipCode(),
+                req.getEmail()             // new email
+        );
+
         return ResponseEntity.ok(
                 UserProfileDto.builder()
-                        .username(updated.getUsername())
+                        .firstName(updated.getFirstName())
+                        .lastName(updated.getLastName())
+                        .phoneNumber(updated.getPhoneNumber())
+                        .zipCode(updated.getZipCode())
                         .email(updated.getEmail())
-                        .fullName(updated.getFullName())
+                        .isSuperadmin(updated.getIsSuperadmin())
                         .build()
         );
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
