@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.Optional;
+import java.util.HashMap;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -51,17 +54,57 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest req) {
         try {
+            // Authenticate
             authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
             );
-            String token = jwtUtil.generateToken(req.getEmail());
-            return ResponseEntity.ok(Map.of("token", token));
+
+            // Fetch user
+            Optional<User> optionalUser = userService.findByEmail(req.getEmail());
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Invalid email or password"));
+            }
+            User user = optionalUser.get();
+
+            // Generate token
+            String token = jwtUtil.generateToken(user.getEmail());
+
+            // Build user map
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("id", user.getId());
+            userMap.put("first_name", user.getFirstName());
+            userMap.put("last_name", user.getLastName());
+            userMap.put("phone_number", user.getPhoneNumber());
+            userMap.put("zip_code", user.getZipCode());
+            userMap.put("is_superadmin", user.getIsSuperadmin());
+            userMap.put("email", user.getEmail());
+            userMap.put("email_verified_at", user.getEmailVerifiedAt());
+            userMap.put("password", user.getPassword());
+            userMap.put("remember_token", user.getRememberToken());
+            userMap.put("created_at", user.getCreatedAt());
+            userMap.put("updated_at", user.getUpdatedAt());
+
+            // Build final response
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", userMap);
+            response.put("access_token", token);
+            response.put("token_type", "bearer");
+            response.put("is_superadmin", user.getIsSuperadmin());
+            response.put("expires_in", 2073600);
+
+            return ResponseEntity.ok(response);
+
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid email or password"));
         }
     }
+
+
+
 
     @PutMapping("/profile")
     public ResponseEntity<UserProfileDto> updateProfile(@RequestBody UserProfileDto req, Principal principal) {
