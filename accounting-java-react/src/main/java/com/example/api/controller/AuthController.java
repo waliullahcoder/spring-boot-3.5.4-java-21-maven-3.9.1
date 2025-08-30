@@ -43,7 +43,7 @@ public class AuthController {
                 .lastName(req.getLastName())
                 .phoneNumber(req.getPhoneNumber())
                 .zipCode(req.getZipCode())
-                .isSuperadmin(req.getIsSuperadmin() != null ? req.getIsSuperadmin() : false)
+                .isSuperadmin(req.getIsSuperadminAsBoolean()) // ✅ convert 0/1 → boolean
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .rememberToken(null)   // later can set for "remember me"
@@ -69,8 +69,8 @@ public class AuthController {
             }
             User user = optionalUser.get();
 
-            // Generate token
-            String token = jwtUtil.generateToken(user.getEmail());
+            // Convert boolean to 1/0
+            int isSuperadminInt = user.getIsSuperadmin() != null && user.getIsSuperadmin() ? 1 : 0;
 
             // Build user map
             Map<String, Object> userMap = new HashMap<>();
@@ -79,7 +79,7 @@ public class AuthController {
             userMap.put("last_name", user.getLastName());
             userMap.put("phone_number", user.getPhoneNumber());
             userMap.put("zip_code", user.getZipCode());
-            userMap.put("is_superadmin", user.getIsSuperadmin());
+            userMap.put("is_superadmin", isSuperadminInt); // 1/0 instead of true/false
             userMap.put("email", user.getEmail());
             userMap.put("email_verified_at", user.getEmailVerifiedAt());
             userMap.put("password", user.getPassword());
@@ -90,9 +90,9 @@ public class AuthController {
             // Build final response
             Map<String, Object> response = new HashMap<>();
             response.put("user", userMap);
-            response.put("access_token", token);
+            response.put("access_token", jwtUtil.generateToken(user.getEmail()));
             response.put("token_type", "bearer");
-            response.put("is_superadmin", user.getIsSuperadmin());
+            response.put("is_superadmin", isSuperadminInt); // top-level also 1/0
             response.put("expires_in", 2073600);
 
             return ResponseEntity.ok(response);
@@ -102,6 +102,7 @@ public class AuthController {
                     .body(Map.of("message", "Invalid email or password"));
         }
     }
+
 
 
 

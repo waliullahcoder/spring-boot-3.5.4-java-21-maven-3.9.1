@@ -8,7 +8,12 @@ public class RegisterRequest {
     private String lastName;
     private String phoneNumber;
     private String zipCode;
-    private Boolean isSuperadmin = false; // default false
+    private Integer isSuperadmin = 0; // accept 0/1
     private String email;
     private String password;
+
+    // convenience getter for boolean
+    public Boolean getIsSuperadminAsBoolean() {
+        return isSuperadmin != null && isSuperadmin == 1;
+    }
 }
