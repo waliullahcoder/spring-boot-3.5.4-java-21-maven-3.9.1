@@ -104,31 +104,68 @@ public class AuthController {
     }
 
 
-
-
-
-    @PutMapping("/profile")
-    public ResponseEntity<UserProfileDto> updateProfile(@RequestBody UserProfileDto req, Principal principal) {
-        User updated = userService.updateProfile(
-                principal.getName(),       // current email
-                req.getFirstName(),
-                req.getLastName(),
-                req.getPhoneNumber(),
-                req.getZipCode(),
-                req.getEmail()             // new email
-        );
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        var users = userService.findAll();
 
         return ResponseEntity.ok(
-                UserProfileDto.builder()
-                        .firstName(updated.getFirstName())
-                        .lastName(updated.getLastName())
-                        .phoneNumber(updated.getPhoneNumber())
-                        .zipCode(updated.getZipCode())
-                        .email(updated.getEmail())
-                        .isSuperadmin(updated.getIsSuperadmin())
-                        .build()
+                users.stream().map(user -> {
+                    // superadmin কে 1/0 এ কনভার্ট
+                    int isSuperadminInt = user.getIsSuperadmin() != null && user.getIsSuperadmin() ? 1 : 0;
+
+                    Map<String, Object> userMap = new HashMap<>();
+                    userMap.put("id", user.getId());
+                    userMap.put("first_name", user.getFirstName());
+                    userMap.put("last_name", user.getLastName());
+                    userMap.put("phone_number", user.getPhoneNumber());
+                    userMap.put("zip_code", user.getZipCode());
+                    userMap.put("is_superadmin", isSuperadminInt);
+                    userMap.put("email", user.getEmail());
+                    userMap.put("email_verified_at", user.getEmailVerifiedAt());
+                    userMap.put("created_at", user.getCreatedAt());
+                    userMap.put("updated_at", user.getUpdatedAt());
+                    return userMap;
+                }).toList()
         );
     }
+
+
+
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<?> updateProfile(
+            @PathVariable Long id,
+            @RequestBody UserProfileDto req) {
+
+        System.out.println("Updating user id: " + id);
+        System.out.println("Incoming firstName: " + req.getFirstName());
+
+        try {
+            User updated = userService.updateProfileById(
+                    id,
+                    req.getFirstName(),
+                    req.getLastName(),
+                    req.getPhoneNumber(),
+                    req.getZipCode(),
+                    req.getEmail()
+            );
+
+            return ResponseEntity.ok(UserProfileDto.builder()
+                    .firstName(updated.getFirstName())
+                    .lastName(updated.getLastName())
+                    .phoneNumber(updated.getPhoneNumber())
+                    .zipCode(updated.getZipCode())
+                    .email(updated.getEmail())
+                    .isSuperadmin(updated.getIsSuperadmin())
+                    .build()
+            );
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+
+
 
 
     @PostMapping("/logout")
