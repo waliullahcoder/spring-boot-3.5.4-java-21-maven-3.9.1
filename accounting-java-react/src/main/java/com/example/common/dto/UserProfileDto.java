@@ -16,6 +16,6 @@ public class UserProfileDto {
     private String phoneNumber;
     private String zipCode;
     private String email;
-    private Boolean isSuperadmin;
+    private Boolean isSuperadmin;  // <- add this
 }
 

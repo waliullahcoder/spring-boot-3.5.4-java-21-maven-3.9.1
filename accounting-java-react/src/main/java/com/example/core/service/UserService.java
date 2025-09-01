@@ -28,25 +28,26 @@ public class UserService {
     }
 
 
-    public User updateProfileById(
-            Long id,
-            String firstName,
-            String lastName,
-            String phoneNumber,
-            String zipCode,
-            String newEmail) {
-
+    public User updateProfileById(Long id,
+                                  String firstName,
+                                  String lastName,
+                                  String phoneNumber,
+                                  String zipCode,
+                                  String email,
+                                  Boolean isSuperadmin) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (firstName != null) user.setFirstName(firstName);
         if (lastName != null) user.setLastName(lastName);
         if (phoneNumber != null) user.setPhoneNumber(phoneNumber);
         if (zipCode != null) user.setZipCode(zipCode);
-        if (newEmail != null) user.setEmail(newEmail);
+        if (email != null) user.setEmail(email);
+        if (isSuperadmin != null) user.setIsSuperadmin(isSuperadmin);
 
         return userRepository.save(user);
     }
+
 
 
 

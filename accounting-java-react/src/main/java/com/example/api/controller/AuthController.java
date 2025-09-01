@@ -146,7 +146,8 @@ public class AuthController {
                     req.getLastName(),
                     req.getPhoneNumber(),
                     req.getZipCode(),
-                    req.getEmail()
+                    req.getEmail(),
+                    req.getIsSuperadmin()   // <- pass this
             );
 
             return ResponseEntity.ok(UserProfileDto.builder()
