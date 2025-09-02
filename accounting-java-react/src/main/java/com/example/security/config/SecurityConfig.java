@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .cors(cors -> {}) // enable CORS using corsFilter bean
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // login & register
+                        .requestMatchers("/api/categories/**").permitAll() // 👈 allow anyone
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authProvider())

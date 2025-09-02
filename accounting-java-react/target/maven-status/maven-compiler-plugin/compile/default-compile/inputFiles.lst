@@ -1,10 +1,16 @@
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\accounting\AccountingJavaReactApplication.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\api\controller\AuthController.java
+D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\api\controller\CategoryController.java
+D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\common\dto\CategoryRequest.java
+D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\common\dto\CategoryUpdateDto.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\common\dto\LoginRequest.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\common\dto\RegisterRequest.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\common\dto\UserProfileDto.java
+D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\core\service\CategoryService.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\core\service\UserService.java
+D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\persistence\entity\Category.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\persistence\entity\User.java
+D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\persistence\repository\CategoryRepository.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\persistence\repository\UserRepository.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\security\config\SecurityConfig.java
 D:\laragon\www\java-react-frontend\accounting-java-react\src\main\java\com\example\security\jwt\JwtFilter.java
