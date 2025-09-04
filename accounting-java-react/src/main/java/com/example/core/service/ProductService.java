@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ProductService {
     Product save(Product product);
-
+    void deleteById(Long id);
     List<Product> findAll();
 
     Optional<Product> findByCode(String code);

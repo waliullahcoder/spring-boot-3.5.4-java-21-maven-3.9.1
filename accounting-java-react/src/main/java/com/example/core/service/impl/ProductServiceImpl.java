@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByCode(code);
     }
 
+
     @Override
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
@@ -49,4 +50,10 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.save(existing);
         }).orElseThrow(() -> new RuntimeException("Product not found with id " + id));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
+    }
+
 }

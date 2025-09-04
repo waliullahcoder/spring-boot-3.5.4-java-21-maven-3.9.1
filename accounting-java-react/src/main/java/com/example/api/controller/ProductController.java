@@ -13,17 +13,18 @@ import java.nio.file.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
     private static final String UPLOAD_DIR = "uploads/products/";
 
-    // Insert product with image
-    @PostMapping(value = "/products", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createProduct(
+    // ========================
+    // CREATE (with image upload)
+    // ========================
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> createProduct(
             @RequestParam String name,
             @RequestParam String model,
             @RequestParam String code,
@@ -33,37 +34,64 @@ public class ProductController {
             @RequestParam Double purchasePrice,
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
+        Map<String, Object> response = new HashMap<>();
         try {
-            String fileName = null;
-            if (imageFile != null && !imageFile.isEmpty()) {
-                fileName = saveImage(imageFile);
-            }
+            String fileName = (imageFile != null && !imageFile.isEmpty()) ? saveImage(imageFile) : null;
 
             Product product = Product.builder()
-                    .model(name)
+                    .name(name)
                     .model(model)
                     .code(code)
                     .categoryId(categoryId)
                     .quantity(quantity)
                     .salePrice(salePrice)
                     .purchasePrice(purchasePrice)
-                    .image(fileName) // store relative path or filename in DB
+                    .image(fileName)
                     .build();
 
-            productService.save(product);
+            Product savedProduct = productService.save(product);
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(Map.of("message", "Product created successfully", "image", fileName));
+            response.put("message", "Product created successfully");
+            response.put("product", savedProduct);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Image upload failed", "error", e.getMessage()));
+            response.put("message", "Image upload failed");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // Update product with optional image replacement
-    @PutMapping(value = "/products/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> updateProduct(
+    // ========================
+    // READ all products
+    // ========================
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.findAll());
+    }
+
+    // ========================
+    // READ product by id
+    // ========================
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getProductById(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Product> productOpt = productService.findById(id);
+        if (productOpt.isPresent()) {
+            response.put("product", productOpt.get());
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "Product not found with id " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    // ========================
+    // UPDATE product (with optional image replacement)
+    // ========================
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> updateProduct(
             @PathVariable Long id,
             @RequestParam String name,
             @RequestParam String model,
@@ -74,22 +102,20 @@ public class ProductController {
             @RequestParam Double purchasePrice,
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
+        Map<String, Object> response = new HashMap<>();
         try {
             Product existing = productService.findById(id)
                     .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
 
-            String fileName = existing.getImage(); // keep old image if not replaced
-
-            // Replace image if new one is uploaded
+            String fileName = existing.getImage();
             if (imageFile != null && !imageFile.isEmpty()) {
-                // delete old image if exists
                 if (fileName != null) {
-                    Path oldPath = Paths.get(UPLOAD_DIR, fileName);
-                    Files.deleteIfExists(oldPath);
+                    Files.deleteIfExists(Paths.get(UPLOAD_DIR, fileName));
                 }
                 fileName = saveImage(imageFile);
             }
-            existing.setModel(name);
+
+            existing.setName(name);
             existing.setModel(model);
             existing.setCode(code);
             existing.setCategoryId(categoryId);
@@ -98,29 +124,61 @@ public class ProductController {
             existing.setPurchasePrice(purchasePrice);
             existing.setImage(fileName);
 
-            productService.save(existing);
+            Product updated = productService.save(existing);
 
-            return ResponseEntity.ok(Map.of("message", "Product updated successfully", "image", fileName));
+            response.put("message", "Product updated successfully");
+            response.put("product", updated);
+            return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", e.getMessage()));
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Image upload failed", "error", e.getMessage()));
+            response.put("message", "Image upload failed");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // Utility to save file (like multer storage)
+    // ========================
+    // DELETE product
+    // ========================
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        return productService.findById(id).map(product -> {
+            try {
+                if (product.getImage() != null) {
+                    Files.deleteIfExists(Paths.get(UPLOAD_DIR, product.getImage()));
+                }
+                productService.deleteById(id); // make sure deleteById exists in service
+                response.put("message", "Product deleted successfully");
+                return ResponseEntity.ok(response);
+            } catch (IOException e) {
+                response.put("message", "Failed to delete image");
+                response.put("error", e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+        }).orElseGet(() -> {
+            response.put("message", "Product not found with id " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        });
+    }
+
+    // ========================
+    // Utility to save file
+    // ========================
     private String saveImage(MultipartFile file) throws IOException {
         File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs(); // create directories recursively
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+
+        String extension = "";
+        String originalName = file.getOriginalFilename();
+        if (originalName != null && originalName.contains(".")) {
+            extension = originalName.substring(originalName.lastIndexOf("."));
         }
 
-        String uniqueName = System.currentTimeMillis() + "-" + UUID.randomUUID() +
-                file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-
+        String uniqueName = System.currentTimeMillis() + "-" + UUID.randomUUID() + extension;
         Path filePath = Paths.get(UPLOAD_DIR, uniqueName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
