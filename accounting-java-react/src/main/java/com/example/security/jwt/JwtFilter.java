@@ -27,7 +27,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
         // Skip JWT check for login and registration endpoints
-        if (path.equals("/api/auth/login") || path.equals("/api/auth/register") || path.equals("/api/auth/users") || path.equals("/api/categories") || path.equals("/api/products")) {
+        if (
+                path.equals("/api/auth/login")
+                        || path.equals("/api/auth/register")
+                        || path.equals("/api/auth/users")
+                        || path.equals("/api/categories")
+                        || path.equals("/api/products")
+                        || path.startsWith("/api/products/") // match all /api/products/{id}
+        ) {
             chain.doFilter(request, response);
             return;
         }
