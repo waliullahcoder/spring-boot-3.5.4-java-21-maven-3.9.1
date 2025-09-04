@@ -83,7 +83,7 @@ export const numberToWords = (num) => {
     if (!userId) return null; // Ensure userId is provided
 
     try {
-        const response = await axios.get(`http://localhost:5000/api/permission/single/${userId}`);
+        const response = await axios.get(`http://localhost:8080/api/permission/single/${userId}`);
         console.log("SINGLE API DATA", response);
         
         return response.data; // Return fetched data

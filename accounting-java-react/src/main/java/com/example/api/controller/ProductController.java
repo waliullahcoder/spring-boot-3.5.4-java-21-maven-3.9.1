@@ -13,7 +13,7 @@ import java.nio.file.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/product")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -23,7 +23,7 @@ public class ProductController {
     // ========================
     // CREATE (with image upload)
     // ========================
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, Object>> createProduct(
             @RequestParam String name,
             @RequestParam String model,
@@ -66,7 +66,7 @@ public class ProductController {
     // ========================
     // READ all products
     // ========================
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.findAll());
     }
@@ -74,7 +74,7 @@ public class ProductController {
     // ========================
     // READ product by id
     // ========================
-    @GetMapping("/{id}")
+    @GetMapping("/edit/{id}")
     public ResponseEntity<Map<String, Object>> getProductById(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
         Optional<Product> productOpt = productService.findById(id);
@@ -90,7 +90,7 @@ public class ProductController {
     // ========================
     // UPDATE product (with optional image replacement)
     // ========================
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, Object>> updateProduct(
             @PathVariable Long id,
             @RequestParam String name,
@@ -143,7 +143,7 @@ public class ProductController {
     // ========================
     // DELETE product
     // ========================
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable Long id) {
         Map<String, Object> response = new HashMap<>();
         return productService.findById(id).map(product -> {

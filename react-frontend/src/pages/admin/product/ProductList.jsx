@@ -146,7 +146,7 @@ console.log("WALI currentProducts",currentProducts);
                       <td className="py-3 px-5 border-b">${product.purchase_price.toFixed(2)}</td>
                       <td className="py-3 px-5 border-b">
                         {product.image ? (
-                          <img src={`http://localhost:5000${product.image}`} alt={product.name} className="w-16 h-16 object-cover" />
+                          <img src={`http://localhost:8080${product.image}`} alt={product.name} className="w-16 h-16 object-cover" />
                         ) : (
                           "No Image"
                         )}

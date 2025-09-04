@@ -45,7 +45,7 @@ const PermissionForm = () => {
   const fetchRolePermissions = async (roleId) => {
     try {
       setLoading(true);
-      const response = await axios.put(`http://localhost:5000/api/permission/edit/${roleId}`);
+      const response = await axios.put(`http://localhost:8080/api/permission/edit/${roleId}`);
       const existingPermissions = response.data;
       const permissioncount = existingPermissions.length;
       setPermissionCount(permissioncount);

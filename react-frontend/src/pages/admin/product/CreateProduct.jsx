@@ -257,7 +257,7 @@ const CreateProduct = () => {
           {imagePreview ? (
               <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded" />
             ) : existingImage ? (
-              <img src={`http://localhost:5000${existingImage}`} alt="Existing" className="w-32 h-32 object-cover rounded" />
+              <img src={`http://localhost:8080${existingImage}`} alt="Existing" className="w-32 h-32 object-cover rounded" />
           ) : (
             <div className="w-32 h-32 bg-gray-200 rounded flex items-center justify-center">
               <span>No Image</span>

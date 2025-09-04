@@ -26,16 +26,19 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
 
+    // AuthenticationManager bean
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    // Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // DaoAuthenticationProvider
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -44,29 +47,31 @@ public class SecurityConfig {
         return provider;
     }
 
-    // ✅ Global CORS config for React frontend
+    // Global CORS config for React frontend
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // React app origin
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // React app
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
 
+    // Security filter chain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {}) // enable CORS using corsFilter bean
+                .cors(cors -> {}) // enable CORS using the CorsFilter bean
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // login & register
-                        .requestMatchers("/api/categories/**").permitAll() // allow anyone
-                        .requestMatchers("/api/products/**").permitAll() // allow anyone
+                        // Public endpoints
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/product/category/**").permitAll()
+                        .requestMatchers("/api/product/**").permitAll()
+                        // All other endpoints require JWT
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authProvider())
@@ -74,4 +79,6 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 }

@@ -1,5 +1,6 @@
 // Define the base URL
-const baseurl = 'http://localhost:5000'; // Node APIs
+// const baseurl = 'http://localhost:5000'; // Node APIs
+const baseurl = 'http://localhost:8080'; // Java APIs
 
 // Define your API endpoints with placeholders for dynamic parameters
 const createProductCategoryApi = `${baseurl}/api/product/category/add`;

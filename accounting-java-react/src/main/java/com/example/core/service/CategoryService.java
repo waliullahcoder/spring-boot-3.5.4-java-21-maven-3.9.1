@@ -15,9 +15,11 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public void categories(Category ctegory) {
-        categoryRepository.save(ctegory);
+    // CategoryService.java
+    public Category categories(Category category) {
+        return categoryRepository.save(category); // return the saved entity
     }
+
 
     public Optional<Category> findByName(String name) {
         return categoryRepository.findByName(name);

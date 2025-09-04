@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/product/category")
 @RequiredArgsConstructor
 public class CategoryController {
 
@@ -29,31 +29,37 @@ public class CategoryController {
     private final AuthenticationManager authManager;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/categories")
-    public ResponseEntity<String> categories(@Valid @RequestBody CategoryRequest req) {
-        System.out.println("WALI"+req);
+    @PostMapping("/add")
+    public ResponseEntity<Object> categories(@Valid @RequestBody CategoryRequest req) {
+        // Check if category already exists
         if (categoryService.findByName(req.getName()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Name already exists!");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Name already exists!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
         Category category = Category.builder()
                 .name(req.getName())
                 .build();
 
-        categoryService.categories(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Category registered successfully");
+        Category savedCategory = categoryService.categories(category); // save and return
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
-    
 
 
-    @GetMapping("/categories")
+
+
+
+    @GetMapping("/list")
     public ResponseEntity<?> getAllCategories() {
         var users = categoryService.findAll();
 
         return ResponseEntity.ok(
                 users.stream().map(category -> {
                     Map<String, Object> categoryMap = new HashMap<>();
+                    categoryMap.put("id", category.getId());
                     categoryMap.put("name", category.getName());
                     categoryMap.put("created_at", category.getCreatedAt());
                     categoryMap.put("updated_at", category.getUpdatedAt());
@@ -62,7 +68,7 @@ public class CategoryController {
         );
     }
 
-    @PutMapping("/category/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCategory(
             @PathVariable Long id,
             @RequestBody CategoryUpdateDto req) {
