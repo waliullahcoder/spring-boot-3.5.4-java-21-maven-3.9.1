@@ -26,15 +26,12 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws IOException, ServletException {
 
         String path = request.getRequestURI();
-        // Skip JWT check for login and registration endpoints
+
+        // Skip JWT check for login, product APIs, and public images
         if (
-                path.equals("/api/auth/login")
-                        || path.equals("/api/auth/register")
-                        || path.equals("/api/auth/users")
-                        || path.equals("/api/product/category")
-                        || path.startsWith("/api/product/category/")
-                        || path.equals("/api/product")
-                        || path.startsWith("/api/product/") // match all /api/products/{id}
+                path.startsWith("/api/auth/")
+                        || path.startsWith("/api/product/")
+                        || path.startsWith("/uploads/")   // allow static file access
         ) {
             chain.doFilter(request, response);
             return;
@@ -56,14 +53,12 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (JwtException e) {
-                // Invalid token
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"message\":\"Invalid JWT token\"}");
                 return;
             }
         } else {
-            // Missing token
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"message\":\"Missing or invalid Authorization header\"}");
@@ -72,6 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         chain.doFilter(request, response);
     }
+
 
 
 }
