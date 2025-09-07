@@ -33,6 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         || path.startsWith("/api/product/")
                         || path.startsWith("/uploads/")
                         || path.startsWith("/api/vendor/")
+                        || path.startsWith("/api/customer/")
         ) {
             System.out.println("WALI= "+request + response);
             chain.doFilter(request, response);

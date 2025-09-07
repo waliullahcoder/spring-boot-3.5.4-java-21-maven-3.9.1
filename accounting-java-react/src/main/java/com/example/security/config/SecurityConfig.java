@@ -73,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/product/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/vendor/**").permitAll()
+                        .requestMatchers("/api/customer/**").permitAll()
                         // All other endpoints require JWT
                         .anyRequest().authenticated()
                 )
