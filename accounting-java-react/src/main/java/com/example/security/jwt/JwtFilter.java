@@ -31,8 +31,10 @@ public class JwtFilter extends OncePerRequestFilter {
         if (
                 path.startsWith("/api/auth/")
                         || path.startsWith("/api/product/")
-                        || path.startsWith("/uploads/")   // allow static file access
+                        || path.startsWith("/uploads/")
+                        || path.startsWith("/api/vendor/")
         ) {
+            System.out.println("WALI= "+request + response);
             chain.doFilter(request, response);
             return;
         }
