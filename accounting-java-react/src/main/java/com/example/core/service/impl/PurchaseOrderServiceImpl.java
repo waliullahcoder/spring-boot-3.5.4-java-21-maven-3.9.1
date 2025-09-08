@@ -1,5 +1,6 @@
 package com.example.core.service.impl;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.example.common.dto.PurchaseOrderDTO;
 import com.example.common.dto.PurchaseOrderDetailDTO;
 import com.example.common.dto.PurchaseOrderInfoDTO;
@@ -101,7 +102,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PurchaseOrder> getAllPurchaseOrders() {
-        return purchaseOrderRepository.findAll();
+        List<PurchaseOrder> orders = purchaseOrderRepository.findAll();
+
+        // Initialize lazy collections inside transaction
+        orders.forEach(order -> order.getDetails().size());
+        return orders;
     }
 }

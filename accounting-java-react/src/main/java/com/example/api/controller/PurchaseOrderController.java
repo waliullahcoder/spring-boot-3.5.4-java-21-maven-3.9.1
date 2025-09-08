@@ -39,6 +39,9 @@ public class PurchaseOrderController {
 
     @GetMapping("/list")
     public ResponseEntity<List<PurchaseOrder>> getAllPurchaseOrders() {
-        return ResponseEntity.ok(purchaseOrderService.getAllPurchaseOrders());
+        System.out.println("Aira");
+        List<PurchaseOrder> orders = purchaseOrderService.getAllPurchaseOrders();
+        return ResponseEntity.ok(orders);
     }
+
 }

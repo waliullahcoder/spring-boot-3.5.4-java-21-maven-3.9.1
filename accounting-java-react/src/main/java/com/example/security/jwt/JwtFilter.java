@@ -26,7 +26,7 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws IOException, ServletException {
 
         String path = request.getRequestURI();
-
+        System.out.println("WALI FF= ");
         // Skip JWT check for login, product APIs, and public images
         if (
                 path.startsWith("/api/auth/")
