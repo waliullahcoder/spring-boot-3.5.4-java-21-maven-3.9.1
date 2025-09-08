@@ -18,7 +18,6 @@ com\example\persistence\entity\User$UserBuilder.class
 com\example\common\dto\ProductRequest.class
 com\example\common\dto\PurchaseOrderDetailDTO.class
 com\example\core\service\CategoryService.class
-com\example\common\dto\PurchaseOrderRequestDTO.class
 com\example\api\controller\VendorController.class
 com\example\core\repository\PurchaseOrderDetailRepository.class
 com\example\common\dto\VendorUpdateDto.class
