@@ -106,12 +106,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     @Transactional(readOnly = true)
     public List<PurchaseOrderResponseDTO> getAllPurchaseOrders() {
-        List<PurchaseOrder> orders = purchaseOrderRepository.findAll();
+        List<PurchaseOrder> orders = purchaseOrderRepository.findAll(); // You can add Sort if needed
 
         return orders.stream().map(order -> {
             PurchaseOrderResponseDTO dto = new PurchaseOrderResponseDTO();
             dto.setId(order.getId());
-            dto.setVendorId(order.getVendorId());  // শুধু vendorId
+            dto.setVendorId(order.getVendorId());
             dto.setTotalQuantity(order.getTotalQuantity());
             dto.setTotalAmount(order.getTotalAmount());
             dto.setDiscountPersantage(order.getDiscountPersantage());
@@ -120,6 +120,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             dto.setTaxAmount(order.getTaxAmount());
             dto.setNetAmount(order.getNetAmount());
             dto.setProductPrice(order.getProductPrice());
+
+            // Convert LocalDateTime to ISO string
+            dto.setCreatedAt(order.getCreatedAt() != null ? order.getCreatedAt().toString() : null);
+            dto.setUpdatedAt(order.getUpdatedAt() != null ? order.getUpdatedAt().toString() : null);
+
+            // Vendor info
+            if (order.getVendor() != null) {
+                dto.setVendorFirstName(order.getVendor().getFirstName());
+                dto.setVendorLastName(order.getVendor().getLastName());
+            }
 
             return dto;
         }).toList();

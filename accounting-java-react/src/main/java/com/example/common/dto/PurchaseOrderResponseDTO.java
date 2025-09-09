@@ -15,4 +15,6 @@ public class PurchaseOrderResponseDTO {
     private Double productPrice;
     private String vendorFirstName;
     private String vendorLastName;
+    private String createdAt;
+    private String updatedAt;
 }

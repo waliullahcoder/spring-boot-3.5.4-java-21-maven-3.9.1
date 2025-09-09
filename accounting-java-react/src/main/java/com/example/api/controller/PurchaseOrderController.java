@@ -46,7 +46,7 @@ public class PurchaseOrderController {
 
         List<PurchaseOrderResponseDTO> orders = purchaseOrderService.getAllPurchaseOrders();
 
-        // Pagination (simple example)
+        // Simple pagination
         int start = (page - 1) * limit;
         int end = Math.min(start + limit, orders.size());
         List<PurchaseOrderResponseDTO> pagedOrders = orders.subList(start, end);

@@ -12,7 +12,6 @@ import java.util.List;
 public class PurchaseOrderListResponse {
     @JsonProperty("purchaseOrders")
     private List<PurchaseOrderResponseDTO> purchaseOrders;
-
     private long total;
     private int page;
     private int limit;
