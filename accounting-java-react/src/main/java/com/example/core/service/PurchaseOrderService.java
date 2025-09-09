@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface PurchaseOrderService {
     PurchaseOrder createPurchaseOrder(PurchaseOrderDTO dto);
-    PurchaseOrder updatePurchaseOrder(Long id, PurchaseOrderDTO dto);
+
     PurchaseOrder getPurchaseOrderById(Long id);
 
     List<PurchaseOrderResponseDTO> getAllPurchaseOrders(); // DTO

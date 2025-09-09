@@ -29,12 +29,6 @@ public class PurchaseOrderController {
         return ResponseEntity.ok(created);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<PurchaseOrder> updatePurchaseOrder(@PathVariable Long id,
-                                                             @RequestBody PurchaseOrderDTO purchaseOrderDTO) {
-        PurchaseOrder updated = purchaseOrderService.updatePurchaseOrder(id, purchaseOrderDTO);
-        return ResponseEntity.ok(updated);
-    }
 
     @GetMapping("/show/{id}")
     public ResponseEntity<PurchaseOrderFullResponseDTO> getPurchaseOrder(@PathVariable Long id) {
