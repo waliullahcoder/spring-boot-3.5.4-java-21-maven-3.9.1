@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Data
 @Entity
 @Table(name = "purchase_order_details")
+@EntityListeners(AuditingEntityListener.class) // <--- add this
 public class PurchaseOrderDetail {
 
     @Id
@@ -18,6 +19,7 @@ public class PurchaseOrderDetail {
     private String productName;
     private Long purchaseOrderQuantity;
     private Double purchaseOrderAmount;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -25,7 +27,9 @@ public class PurchaseOrderDetail {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_order_id")
-    private PurchaseOrder purchaseOrder; // replace raw ID
+    private PurchaseOrder purchaseOrder;
 }
+
