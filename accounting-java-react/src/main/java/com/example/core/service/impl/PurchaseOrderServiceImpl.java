@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.common.dto.PurchaseOrderDTO;
 import com.example.common.dto.PurchaseOrderDetailDTO;
 import com.example.common.dto.PurchaseOrderInfoDTO;
+import com.example.common.dto.PurchaseOrderResponseDTO;
 import com.example.core.repository.PurchaseOrderDetailRepository;
 import com.example.core.repository.PurchaseOrderRepository;
 import com.example.core.service.PurchaseOrderService;
@@ -96,18 +97,34 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PurchaseOrder getPurchaseOrderById(Long id) {
         return purchaseOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("PurchaseOrder not found"));
+                .orElseThrow(() -> new RuntimeException("PurchaseOrder not found with id: " + id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PurchaseOrder> getAllPurchaseOrders() {
+    public List<PurchaseOrderResponseDTO> getAllPurchaseOrders() {
         List<PurchaseOrder> orders = purchaseOrderRepository.findAll();
 
-        // Initialize lazy collections inside transaction
-        orders.forEach(order -> order.getDetails().size());
-        return orders;
+        return orders.stream().map(order -> {
+            PurchaseOrderResponseDTO dto = new PurchaseOrderResponseDTO();
+            dto.setId(order.getId());
+            dto.setVendorId(order.getVendorId());  // শুধু vendorId
+            dto.setTotalQuantity(order.getTotalQuantity());
+            dto.setTotalAmount(order.getTotalAmount());
+            dto.setDiscountPersantage(order.getDiscountPersantage());
+            dto.setDiscountAmount(order.getDiscountAmount());
+            dto.setTaxPersantage(order.getTaxPersantage());
+            dto.setTaxAmount(order.getTaxAmount());
+            dto.setNetAmount(order.getNetAmount());
+            dto.setProductPrice(order.getProductPrice());
+
+            return dto;
+        }).toList();
     }
+
+
+
 }

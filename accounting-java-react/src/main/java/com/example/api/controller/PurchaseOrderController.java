@@ -2,6 +2,8 @@ package com.example.api.controller;
 
 import com.example.common.dto.PurchaseOrderDTO;
 import com.example.common.dto.PurchaseOrderDetailDTO;
+import com.example.common.dto.PurchaseOrderListResponse;
+import com.example.common.dto.PurchaseOrderResponseDTO;
 import com.example.core.service.PurchaseOrderService;
 import com.example.persistence.entity.PurchaseOrder;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +40,28 @@ public class PurchaseOrderController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<PurchaseOrder>> getAllPurchaseOrders() {
-        System.out.println("Aira");
-        List<PurchaseOrder> orders = purchaseOrderService.getAllPurchaseOrders();
-        return ResponseEntity.ok(orders);
+    public ResponseEntity<PurchaseOrderListResponse> getAllPurchaseOrders(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        List<PurchaseOrderResponseDTO> orders = purchaseOrderService.getAllPurchaseOrders();
+
+        // Pagination (simple example)
+        int start = (page - 1) * limit;
+        int end = Math.min(start + limit, orders.size());
+        List<PurchaseOrderResponseDTO> pagedOrders = orders.subList(start, end);
+
+        PurchaseOrderListResponse response = new PurchaseOrderListResponse();
+        response.setPurchaseOrders(pagedOrders);
+        response.setTotal(orders.size());
+        response.setPage(page);
+        response.setLimit(limit);
+
+        return ResponseEntity.ok(response);
     }
+
+
+
+
 
 }

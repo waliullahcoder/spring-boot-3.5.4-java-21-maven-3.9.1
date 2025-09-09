@@ -4,6 +4,7 @@ com\example\common\dto\UserProfileDto.class
 com\example\persistence\entity\PurchaseOrder$PurchaseOrderBuilder.class
 com\example\common\dto\RegisterRequest.class
 com\example\core\service\CustomerService.class
+com\example\common\dto\PurchaseOrderResponseDTO.class
 com\example\api\controller\CategoryController.class
 com\example\persistence\repository\CategoryRepository.class
 com\example\persistence\entity\Customer.class
@@ -59,4 +60,5 @@ com\example\AccountingJavaReactApplication.class
 com\example\persistence\entity\User.class
 com\example\common\dto\CategoryRequest.class
 com\example\common\dto\ProductUpdateDto.class
+com\example\common\dto\PurchaseOrderListResponse.class
 com\example\persistence\repository\CustomerRepository.class
