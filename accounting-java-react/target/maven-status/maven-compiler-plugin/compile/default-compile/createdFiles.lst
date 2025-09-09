@@ -24,10 +24,12 @@ com\example\core\repository\PurchaseOrderDetailRepository.class
 com\example\common\dto\VendorUpdateDto.class
 com\example\core\repository\PurchaseOrderRepository.class
 com\example\persistence\entity\PurchaseOrderDetail.class
+com\example\common\dto\purchases\PurchaseOrderFullResponseDTO.class
 com\example\persistence\entity\Category.class
 com\example\core\service\ProductService.class
 com\example\persistence\repository\VendorRepository.class
 com\example\core\service\impl\CustomerServiceImpl.class
+com\example\common\dto\purchases\PurchaseOrderDetailResponseDTO.class
 com\example\common\dto\VendorRequest.class
 com\example\common\dto\CategoryUpdateDto$CategoryUpdateDtoBuilder.class
 com\example\common\dto\ProductUpdateDto$ProductUpdateDtoBuilder.class

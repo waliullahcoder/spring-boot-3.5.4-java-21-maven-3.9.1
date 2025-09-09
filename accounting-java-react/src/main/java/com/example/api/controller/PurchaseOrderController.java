@@ -4,6 +4,8 @@ import com.example.common.dto.PurchaseOrderDTO;
 import com.example.common.dto.PurchaseOrderDetailDTO;
 import com.example.common.dto.PurchaseOrderListResponse;
 import com.example.common.dto.PurchaseOrderResponseDTO;
+import com.example.common.dto.purchases.PurchaseOrderDetailResponseDTO;
+import com.example.common.dto.purchases.PurchaseOrderFullResponseDTO;
 import com.example.core.service.PurchaseOrderService;
 import com.example.persistence.entity.PurchaseOrder;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +37,11 @@ public class PurchaseOrderController {
     }
 
     @GetMapping("/show/{id}")
-    public ResponseEntity<PurchaseOrder> getPurchaseOrder(@PathVariable Long id) {
-        return ResponseEntity.ok(purchaseOrderService.getPurchaseOrderById(id));
+    public ResponseEntity<PurchaseOrderFullResponseDTO> getPurchaseOrder(@PathVariable Long id) {
+        PurchaseOrderFullResponseDTO response = purchaseOrderService.getPurchaseOrderFullById(id);
+        return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/list")
     public ResponseEntity<PurchaseOrderListResponse> getAllPurchaseOrders(

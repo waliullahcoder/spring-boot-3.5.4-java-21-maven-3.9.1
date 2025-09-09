@@ -5,6 +5,8 @@ import com.example.common.dto.PurchaseOrderDTO;
 import com.example.common.dto.PurchaseOrderDetailDTO;
 import com.example.common.dto.PurchaseOrderInfoDTO;
 import com.example.common.dto.PurchaseOrderResponseDTO;
+import com.example.common.dto.purchases.PurchaseOrderDetailResponseDTO;
+import com.example.common.dto.purchases.PurchaseOrderFullResponseDTO;
 import com.example.core.repository.PurchaseOrderDetailRepository;
 import com.example.core.repository.PurchaseOrderRepository;
 import com.example.core.service.PurchaseOrderService;
@@ -59,6 +61,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     @Override
+    public PurchaseOrder getPurchaseOrderById(Long id) {
+        return purchaseOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("PurchaseOrder not found with id: " + id));
+    }
+
+
+    @Override
     public PurchaseOrder updatePurchaseOrder(Long id, PurchaseOrderDTO dto) {
         PurchaseOrder order = purchaseOrderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PurchaseOrder not found"));
@@ -98,10 +107,52 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public PurchaseOrder getPurchaseOrderById(Long id) {
-        return purchaseOrderRepository.findById(id)
+    public PurchaseOrderFullResponseDTO getPurchaseOrderFullById(Long id) {
+        PurchaseOrder order = purchaseOrderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PurchaseOrder not found with id: " + id));
+
+        PurchaseOrderFullResponseDTO dto = new PurchaseOrderFullResponseDTO();
+        dto.setId(order.getId());
+        dto.setVendorId(order.getVendorId());
+        dto.setTotalQuantity(order.getTotalQuantity());
+        dto.setTotalAmount(order.getTotalAmount());
+        dto.setDiscountPersantage(order.getDiscountPersantage());
+        dto.setDiscountAmount(order.getDiscountAmount());
+        dto.setTaxPersantage(order.getTaxPersantage());
+        dto.setTaxAmount(order.getTaxAmount());
+        dto.setNetAmount(order.getNetAmount());
+        dto.setProductPrice(order.getProductPrice());
+        dto.setCreatedAt(order.getCreatedAt() != null ? order.getCreatedAt().toString() : null);
+        dto.setUpdatedAt(order.getUpdatedAt() != null ? order.getUpdatedAt().toString() : null);
+
+        if (order.getVendor() != null) {
+            dto.setVendorFirstName(order.getVendor().getFirstName());
+            dto.setVendorLastName(order.getVendor().getLastName());
+            dto.setVendorAddress(order.getVendor().getAddress());
+            dto.setVendorPhoneNo(order.getVendor().getPhoneNumber());
+            dto.setVendorEmail(order.getVendor().getEmail());
+            dto.setVendorZipCode(order.getVendor().getZipCode());
+        }
+
+        List<PurchaseOrderDetailResponseDTO> details = order.getDetails().stream().map(d -> {
+            PurchaseOrderDetailResponseDTO detailDTO = new PurchaseOrderDetailResponseDTO();
+            detailDTO.setId(d.getId());
+            detailDTO.setPurchaseOrderId(order.getId());
+            detailDTO.setProductId(d.getProductId());
+            detailDTO.setProductName(d.getProductName());
+            detailDTO.setPurchaseOrderQuantity(d.getPurchaseOrderQuantity());
+            detailDTO.setPurchaseOrderAmount(d.getPurchaseOrderAmount());
+            detailDTO.setCreatedAt(d.getCreatedAt() != null ? d.getCreatedAt().toString() : null);
+            detailDTO.setUpdatedAt(d.getUpdatedAt() != null ? d.getUpdatedAt().toString() : null);
+            return detailDTO;
+        }).toList();
+
+
+        dto.setPurchaseOrderDetails(details);
+
+        return dto;
     }
+
 
     @Override
     @Transactional(readOnly = true)
